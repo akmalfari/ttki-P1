@@ -1,0 +1,104 @@
+{
+  "seed": 42,
+  "dataset": {
+    "file": "PhiUSIIL_Phishing_URL_Dataset.csv",
+    "download_date": "2026-11-12",
+    "sha256": "a236549cd369cd80bd478ff8e1779cbf44c58d5c3f79f7a51a1adbed7d06d1c6",
+    "label_note": "label asli 1=legitimate, 0=phishing; y = 1 - label (phishing=kelas positif)"
+  },
+  "registered_domain_policy": {
+    "psl": "private",
+    "note": "Dipilih kelompok: include_psl_private_domains=True (tldextract). Hanya berlaku untuk skenario C-D; skenario A-B memakai split acak.",
+    "status": "dipilih Akmal; perlu disepakati dengan Dika"
+  },
+  "features": {
+    "F_URL": [
+      "URLLength",
+      "DomainLength",
+      "IsDomainIP",
+      "TLDLength",
+      "NoOfSubDomain",
+      "HasObfuscation",
+      "NoOfObfuscatedChar",
+      "ObfuscationRatio",
+      "NoOfLettersInURL",
+      "LetterRatioInURL",
+      "NoOfDegitsInURL",
+      "DegitRatioInURL",
+      "NoOfEqualsInURL",
+      "NoOfQMarkInURL",
+      "NoOfAmpersandInURL",
+      "NoOfOtherSpecialCharsInURL",
+      "SpacialCharRatioInURL",
+      "IsHTTPS"
+    ],
+    "F_Page": [
+      "LineOfCode",
+      "LargestLineLength",
+      "HasTitle",
+      "DomainTitleMatchScore",
+      "URLTitleMatchScore",
+      "HasFavicon",
+      "Robots",
+      "IsResponsive",
+      "NoOfURLRedirect",
+      "NoOfSelfRedirect",
+      "HasDescription",
+      "NoOfPopup",
+      "NoOfiFrame",
+      "HasExternalFormSubmit",
+      "HasSocialNet",
+      "HasSubmitButton",
+      "HasHiddenFields",
+      "HasPasswordField",
+      "Bank",
+      "Pay",
+      "Crypto",
+      "HasCopyrightInfo",
+      "NoOfImage",
+      "NoOfCSS",
+      "NoOfJS",
+      "NoOfSelfRef",
+      "NoOfEmptyRef",
+      "NoOfExternalRef"
+    ],
+    "excluded_unclear": [
+      "URLSimilarityIndex",
+      "CharContinuationRate",
+      "TLDLegitimateProb",
+      "URLCharProb"
+    ],
+    "status": "draf, belum diverifikasi kelompok/dosen"
+  },
+  "models": {
+    "logistic_regression": {
+      "penalty": "l2",
+      "C": 1.0,
+      "solver": "lbfgs",
+      "max_iter": 2000,
+      "scaling": "StandardScaler (fit per fold)"
+    },
+    "random_forest": {
+      "n_estimators": 100,
+      "max_depth": null,
+      "max_features": "sqrt",
+      "random_state": 42
+    }
+  },
+  "evaluation": {
+    "test_size": 0.2,
+    "cv_folds": 5,
+    "threshold": 0.5,
+    "primary_metrics": [
+      "f1_phishing",
+      "roc_auc"
+    ],
+    "test_final_touched": false
+  },
+  "scenarios": {
+    "A": "random stratified; F-URL + F-Page (tanpa fitur belum jelas)",
+    "B": "random stratified (split sama dgn A); F-URL saja",
+    "C": "registered-domain-disjoint; F-URL",
+    "D": "registered-domain-disjoint (split sama dgn C); 5 fitur F-URL hasil seleksi"
+  }
+}
