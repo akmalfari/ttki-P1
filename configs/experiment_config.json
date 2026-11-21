@@ -7,9 +7,7 @@
     "label_note": "label asli 1=legitimate, 0=phishing; y = 1 - label (phishing=kelas positif)"
   },
   "registered_domain_policy": {
-    "psl": "private",
-    "note": "Dipilih kelompok: include_psl_private_domains=True (tldextract). Hanya berlaku untuk skenario C-D; skenario A-B memakai split acak.",
-    "status": "dipilih Akmal; perlu disepakati dengan Dika"
+    "status": "disepakati kelompok: include_psl_private_domains=True"
   },
   "features": {
     "F_URL": [
@@ -68,7 +66,7 @@
       "TLDLegitimateProb",
       "URLCharProb"
     ],
-    "status": "draf, belum diverifikasi kelompok/dosen"
+    "status": "diverifikasi kelompok 2026-11-21, belum diverifikasi dosen"
   },
   "models": {
     "logistic_regression": {
@@ -93,7 +91,7 @@
       "f1_phishing",
       "roc_auc"
     ],
-    "test_final_touched": false
+    "test_final_touched": true
   },
   "scenarios": {
     "A": "random stratified; F-URL + F-Page (tanpa fitur belum jelas)",

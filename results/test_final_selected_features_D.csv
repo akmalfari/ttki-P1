@@ -1,0 +1,11 @@
+scenario,model,feature
+D,logistic_regression,LetterRatioInURL
+D,logistic_regression,DegitRatioInURL
+D,logistic_regression,NoOfOtherSpecialCharsInURL
+D,logistic_regression,SpacialCharRatioInURL
+D,logistic_regression,IsHTTPS
+D,random_forest,LetterRatioInURL
+D,random_forest,DegitRatioInURL
+D,random_forest,NoOfOtherSpecialCharsInURL
+D,random_forest,SpacialCharRatioInURL
+D,random_forest,IsHTTPS

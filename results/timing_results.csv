@@ -1,0 +1,17 @@
+scenario,model,thread_mode,n_features,batch_size,n_warmup,n_repeat,median_ms,q1_ms,q3_ms,iqr_ms,min_ms,max_ms
+A,logistic_regression,default,46,1000,3,30,1.967,1.481,2.298,0.817,1.192,2.878
+A,logistic_regression,1_thread,46,1000,3,30,1.458,1.039,1.989,0.95,0.99,2.563
+A,random_forest,default,46,1000,3,30,49.661,47.062,51.567,4.505,35.375,93.094
+A,random_forest,1_thread,46,1000,3,30,19.284,17.691,21.377,3.686,16.353,32.047
+B,logistic_regression,default,18,1000,3,30,0.722,0.647,1.073,0.426,0.566,3.322
+B,logistic_regression,1_thread,18,1000,3,30,1.47,1.276,1.738,0.462,0.815,2.326
+B,random_forest,default,18,1000,3,30,36.86,34.868,39.364,4.496,24.41,84.999
+B,random_forest,1_thread,18,1000,3,30,18.429,18.028,19.053,1.025,17.648,29.951
+C,logistic_regression,default,18,1000,3,30,0.574,0.558,0.633,0.074,0.542,2.039
+C,logistic_regression,1_thread,18,1000,3,30,1.275,0.994,1.451,0.457,0.623,1.973
+C,random_forest,default,18,1000,3,30,35.347,34.399,36.823,2.424,25.054,49.577
+C,random_forest,1_thread,18,1000,3,30,18.538,18.062,18.895,0.834,17.535,22.642
+D,logistic_regression,default,5,1000,3,30,0.689,0.667,0.764,0.097,0.644,2.183
+D,logistic_regression,1_thread,5,1000,3,30,1.339,0.99,1.571,0.581,0.825,3.645
+D,random_forest,default,5,1000,3,30,36.505,35.455,46.667,11.212,24.482,102.805
+D,random_forest,1_thread,5,1000,3,30,18.619,17.98,22.351,4.372,16.525,35.181
