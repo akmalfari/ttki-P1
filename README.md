@@ -195,10 +195,15 @@ URL-only menurunkan F1 dan ROC-AUC kedua model.
 Median waktu inferensi berkurang pada tiga dari empat
 kombinasi model dan mode thread.
 
-Seleksi ANOVA dari 18 menjadi 5 fitur mengurangi
-jumlah fitur sebesar 72.22%, tetapi menurunkan
-performa dan tidak mempercepat median inferensi
-pada seluruh kombinasi yang diuji.
+Pada eksperimen utama, seleksi ANOVA dari 18 menjadi 5 fitur
+mengurangi jumlah fitur sebesar 72,22%, tetapi menurunkan
+performa klasifikasi dan tidak mempercepat median waktu
+inferensi pada kedua model dan kedua mode thread.
+
+Pengukuran ulang menunjukkan bahwa arah perubahan waktu
+inferensi Random Forest pada mode single-thread tidak
+konsisten. Dengan demikian, pengurangan jumlah fitur
+melalui ANOVA tidak menjamin penghematan waktu inferensi.
 
 Tidak dilakukan pengujian signifikansi statistik
 atau pengujian ekuivalensi.
@@ -308,8 +313,15 @@ Environment eksperimen awal tidak memiliki snapshot
 dependency lengkap. Versi package utama pada metadata
 timing awal konsisten dengan paired timing.
 
-Reproduksi independen dari environment baru belum
-diverifikasi.
+Reproduksi komputasional menggunakan clone repositori
+terpisah dan virtual environment baru telah dilakukan
+pada perangkat yang sama. Hasil verifikasi menunjukkan
+kesesuaian numerik metrik klasifikasi dan variabilitas
+waktu inferensi.
+
+Reproduksi independen pada perangkat berbeda belum
+dilakukan. Rincian hasil pemeriksaan tersedia pada
+bagian Verifikasi Reproduksibilitas Komputasional.
 
 ### Instalasi
 
@@ -382,3 +394,97 @@ interpretasi hasil, dan naskah penelitian.
 Dataset asli menggunakan CC BY 4.0.
 
 Lisensi kode repositori belum ditetapkan secara formal.
+
+## Verifikasi Reproduksibilitas Komputasional
+
+Reproduksi dilakukan menggunakan clone repositori terpisah
+pada commit `b3b7a86`, dengan virtual environment baru
+berdasarkan `environment-freeze-paired.txt`, pada perangkat
+yang sama dengan eksperimen utama.
+
+### Hasil Verifikasi
+
+| Komponen | Hasil |
+|---|---|
+| Notebook 01 - Data audit | Berhasil |
+| Notebook 02 - Baseline | 10 hasil CV identik |
+| Notebook 03 - Experiments | 40 hasil CV identik |
+| Notebook 04 - Final test and timing | 8 pipeline dilatih ulang |
+| Random dan grouped split indices | Identik |
+| Fitur terpilih ANOVA | Identik |
+| F1, precision, recall final test | Identik |
+| Confusion matrix final test | Identik |
+| ROC-AUC final test | 7 dari 8 identik |
+| Final reporting table | Identik |
+| Paired timing protocol | Terverifikasi |
+
+Notebook 01 memverifikasi indeks split yang tersimpan.
+Notebook 02 dan 03 menghasilkan ulang indeks split dan
+hasil cross-validation.
+
+Pada Notebook 04, flag RUN_FINAL_TEST dan OVERWRITE_FINAL
+diaktifkan hanya pada salinan notebook di folder reproduksi.
+Tidak dilakukan perubahan hyperparameter, threshold,
+dataset, maupun strategi pembagian data.
+
+### Kesetaraan Numerik
+
+Seluruh metrik cross-validation identik secara numerik.
+Perbedaan pada metrics_per_fold.csv hanya terdapat pada
+kolom waktu pelatihan.
+
+Pada final holdout test, terdapat selisih ROC-AUC sebesar
+9.182782312323e-10 pada skenario B Random Forest.
+
+Pemeriksaan dengan toleransi absolut awal 1e-12 tidak
+lolos untuk nilai tersebut. Pemeriksaan tambahan dengan
+toleransi 1e-8 yang ditetapkan setelah pemeriksaan awal
+menunjukkan kesesuaian numerik.
+
+Seluruh metrik klasifikasi identik pada presisi pelaporan
+empat dan enam angka desimal. Penyebab pasti selisih
+ROC-AUC belum dapat ditentukan.
+
+### Variabilitas Waktu Inferensi
+
+Pengukuran ulang menggunakan indeks batch, konfigurasi
+thread, warm-up, dan jumlah pengulangan yang sama.
+
+Perubahan median waktu inferensi:
+
+| Perbandingan | Model | Mode | Asli | Reproduksi |
+|---|---|---|---:|---:|
+| A ke B | LR | default | -68.65% | -32.74% |
+| A ke B | LR | 1_thread | -63.94% | -28.68% |
+| A ke B | RF | default | -31.81% | -0.55% |
+| A ke B | RF | 1_thread | +4.94% | +12.71% |
+| C ke D | LR | default | +17.66% | +45.17% |
+| C ke D | LR | 1_thread | +18.31% | +53.55% |
+| C ke D | RF | default | +6.36% | +47.80% |
+| C ke D | RF | 1_thread | +25.81% | -7.22% |
+
+Nilai negatif menunjukkan penurunan median waktu inferensi,
+sedangkan nilai positif menunjukkan peningkatan waktu.
+
+Arah perubahan waktu A ke B konsisten pada kedua
+pengujian, tetapi besar perubahan bervariasi.
+
+Pada perbandingan C ke D, Random Forest single-thread
+menunjukkan arah perubahan yang berbeda antarpengujian.
+
+Dengan demikian, pengurangan jumlah fitur melalui ANOVA
+tidak menjamin penghematan waktu inferensi yang konsisten.
+
+### Batas Verifikasi
+
+- Reproduksi dilakukan pada perangkat yang sama dengan
+  environment baru.
+- Tidak dilakukan reproduksi independen pada perangkat lain.
+- Tidak dilakukan validasi eksternal atau temporal.
+- Waktu inferensi hanya mencakup predict_proba menggunakan
+  fitur yang sudah tersedia.
+- Hasil eksperimen asli tetap menjadi hasil utama penelitian.
+- Hasil reproduksi tidak digunakan untuk memilih model
+  atau mengganti hasil utama berdasarkan performa terbaik.
+- Seluruh 11 artefak penelitian asli yang dilindungi
+  tetap memiliki checksum yang sama.
