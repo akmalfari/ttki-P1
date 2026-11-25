@@ -1,13 +1,15 @@
-# requirements.txt — P1 Deteksi Phishing TTKI PENS 2026-1
-# Versi minimum yang diuji; gunakan environment-freeze.txt untuk reproduksi eksak.
-#
-# Install: pip install -r requirements.txt
+# P1 Deteksi Phishing TTKI PENS 2026-1
+# Python 3.12.3
+# Direct dependencies pinned to the verified current environment.
+# Full paired timing environment: environment-freeze-paired.txt
 
-numpy>=1.26
-pandas>=2.0
-scikit-learn>=1.4
-tldextract>=3.4
-threadpoolctl>=3.1
-matplotlib>=3.7
-jupyter>=1.0
-ipykernel>=6.0
+numpy==2.5.5
+pandas==3.1.1
+scikit-learn==1.9.1
+tldextract==5.4.0
+threadpoolctl==3.8.0
+matplotlib==3.11.2
+joblib==1.6.0
+ipykernel==7.4.0
+nbconvert==7.17.2
+nbformat==5.11.1

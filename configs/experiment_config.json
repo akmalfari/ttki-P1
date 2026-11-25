@@ -4,10 +4,12 @@
     "file": "PhiUSIIL_Phishing_URL_Dataset.csv",
     "download_date": "2026-11-12",
     "sha256": "a236549cd369cd80bd478ff8e1779cbf44c58d5c3f79f7a51a1adbed7d06d1c6",
-    "label_note": "label asli 1=legitimate, 0=phishing; y = 1 - label (phishing=kelas positif)"
+    "label_note": "label asli 1=legitimate, 0=phishing; y = 1 - label (phishing=kelas positif)",
+    "sha256_lf": "8e7e0331987e0f4dee0ca29df3b04e1913c19f2d60802c9a929c3e02aed2ff9a"
   },
   "registered_domain_policy": {
-    "status": "disepakati kelompok: include_psl_private_domains=True"
+    "status": "disepakati kelompok: include_psl_private_domains=True",
+    "psl": "private"
   },
   "features": {
     "F_URL": [
