@@ -32,7 +32,7 @@ Evaluasi dibatasi pada analisis offline; URL phishing tidak dikunjungi.
 | Lisensi | CC BY 4.0 |
 | SHA-256 | `a236549cd369cd80bd478ff8e1779cbf44c58d5c3f79f7a51a1adbed7d06d1c6` |
 
-> Dataset **tidak diunggah** ke repositori ini karena ukuran dan pertimbangan lisensi.  
+> Dataset tercatat dalam snapshot Git yang diaudit. Untuk rilis berikutnya, pertimbangkan menyimpan hanya tautan dan metadata dataset.  
 > Unduh dari Kaggle, letakkan di `data/PhiUSIIL_Phishing_URL_Dataset.csv`.
 
 ---
@@ -41,7 +41,7 @@ Evaluasi dibatasi pada analisis offline; URL phishing tidak dikunjungi.
 
 ```
 .
-├── data/                          # Dataset (tidak di-commit)
+├── data/                          # Dataset pada snapshot awal
 │   └── PhiUSIIL_Phishing_URL_Dataset.csv
 ├── configs/
 │   └── experiment_config.json     # Seed, fitur, parameter model, kebijakan PSL
@@ -94,7 +94,9 @@ sha256sum data/PhiUSIIL_Phishing_URL_Dataset.csv
 # Windows (PowerShell)
 Get-FileHash data\PhiUSIIL_Phishing_URL_Dataset.csv -Algorithm SHA256
 ```
-Harus menghasilkan: `a236549cd369cd80bd478ff8e1779cbf44c58d5c3f79f7a51a1adbed7d06d1c6`
+Checksum CRLF asli: `a236549cd369cd80bd478ff8e1779cbf44c58d5c3f79f7a51a1adbed7d06d1c6`
+
+Checksum LF ekuivalen (terverifikasi melalui konversi akhir baris): `8e7e0331987e0f4dee0ca29df3b04e1913c19f2d60802c9a929c3e02aed2ff9a`.
 
 ### 3. Jalankan notebook secara berurutan
 
@@ -131,10 +133,10 @@ Imputasi, scaling (LR), dan seleksi fitur (D) di-fit hanya pada data latih setia
 
 | Hipotesis | ΔF1 LR (test) | ΔF1 RF (test) | Kesimpulan |
 |---|---|---|---|
-| H1: B→C (protokol split) | −0,0004 | 0,0000 | Tidak terdukung — tidak ada perbedaan terukur |
-| H2: C→D (kurangi fitur) — performa | −0,0103 | −0,0030 | Terdukung sebagian |
-| H2: C→D — waktu prediksi | LR 2,43× lebih lambat | RF 1,35× lebih lambat | Tidak terdukung |
-| H3: A→B (kelompok fitur) | −0,0035 | −0,0027 | Terdukung |
+| H1: B→C (protokol split) | −0,0004 | 0,0000 | Tidak terdukung secara konsisten; selisih F1 kecil pada split ini |
+| H2: C→D (kurangi fitur) — performa | −0,0103 | −0,0030 | Penurunan deskriptif; batas kompromi belum ditetapkan |
+| H2: C→D — waktu prediksi | LR 1,20× | RF 1,03× | Belum menunjukkan penghematan (rasio median D/C, default) |
+| H3: A→B (kelompok fitur) | −0,0035 | −0,0027 | Terdukung secara deskriptif |
 
 Waktu diukur pada: Python 3.12.3, sklearn 1.9.1, 4 CPU logis, batch 1.000 baris, 30 ulangan.
 
@@ -150,5 +152,49 @@ Repositori referensi: https://github.com/pradhyumnaag30/PhiUSIIL-Phishing-URL-De
 
 ## Lisensi kode
 
-Kode dalam repositori ini dirilis di bawah lisensi **MIT**.  
+README awal menyatakan lisensi MIT, tetapi berkas LICENSE belum tersedia. Konfirmasi pemilik kode diperlukan sebelum menambahkan lisensi.  
 Dataset mengikuti lisensi CC BY 4.0 dari sumber aslinya.
+
+## Catatan revisi audit
+
+- Hasil final test dan timing awal dipertahankan. Timing awal memakai batch berbeda antar skenario. Notebook 04 yang direvisi menyimpan timing dengan batch sama per protokol ke berkas `*_paired` terpisah. Jalankan dengan `RUN_FINAL_TEST=False` dan `OVERWRITE_FINAL=False`.
+- Skenario D masih menerima 18 fitur sebelum seleksi; waktu mencakup transformasi, bukan ekstraksi URL/HTML.
+- Selisih F1 kecil tidak membuktikan bebas leakage atau generalisasi ke kampanye baru.
+- Matriks literatur: `references/literature_matrix.csv` (status verifikasi mengikuti matriks asli).
+- Environment awal tidak lengkap. Pada environment eksperimen aktual, jalankan `python -m pip freeze > environment-freeze.txt`; jika environment baru, simpan sebagai `environment-freeze-paired.txt`. Jangan mengklaim versi baru sebagai versi run lama.
+- Bantuan AI tambahan: ChatGPT untuk audit dan revisi kode/dokumentasi; perubahan perlu diverifikasi kelompok.
+
+## Hasil Paired Timing Benchmark
+
+Benchmark tambahan menggunakan batch identik untuk skenario
+dalam protokol split yang sama. Hasil timing awal tetap
+dipertahankan sebagai catatan historis.
+
+| Model | Thread mode | C (ms) | D (ms) | Rasio D/C |
+|---|---|---:|---:|---:|
+| Logistic Regression | Default | 0.572 | 0.673 | 1.177 |
+| Logistic Regression | 1 thread | 0.568 | 0.672 | 1.183 |
+| Random Forest | Default | 24.101 | 25.633 | 1.064 |
+| Random Forest | 1 thread | 15.731 | 19.791 | 1.258 |
+
+Reduksi fitur dari 18 menjadi 5 (72.22%) tidak menghasilkan
+penurunan median waktu prediksi pada konfigurasi yang diuji.
+
+Pengukuran mencakup predict_proba beserta transformasi
+pipeline pada fitur yang sudah tersedia, bukan ekstraksi
+fitur URL/HTML atau pengunduhan halaman.
+
+Perbedaan waktu dilaporkan secara deskriptif, bukan sebagai
+bukti signifikansi statistik.
+
+Artefak eksperimen tambahan:
+
+- results/timing_results_paired.csv
+- results/timing_environment_paired.json
+- results/timing_batch_indices_paired.npz
+- results/plots_h1h2h3_paired.png
+- environment-freeze-paired.txt
+
+Integritas test_final_results.csv dan timing_results.csv
+telah diverifikasi menggunakan SHA-256 sebelum dan sesudah
+eksekusi notebook revisi. Kedua file tidak berubah.

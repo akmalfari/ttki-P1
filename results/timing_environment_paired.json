@@ -1,0 +1,30 @@
+{
+  "python": "3.12.3",
+  "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.39",
+  "processor": "x86_64",
+  "cpu_count_logical": 4,
+  "sklearn": "1.9.1",
+  "numpy": "2.5.5",
+  "pandas": "3.1.1",
+  "threadpools": [
+    {
+      "internal_api": "openblas",
+      "num_threads": 4,
+      "version": "0.3.31.dev"
+    },
+    {
+      "internal_api": "openblas",
+      "num_threads": 4,
+      "version": "0.3.34.237.2"
+    },
+    {
+      "internal_api": "openmp",
+      "num_threads": 4,
+      "version": null
+    }
+  ],
+  "batch_size": 1000,
+  "n_warmup": 3,
+  "n_repeat": 30,
+  "catatan": "Waktu predict_proba dari fitur yang sudah tersedia; tidak termasuk pengunduhan halaman/ekstraksi fitur."
+}
